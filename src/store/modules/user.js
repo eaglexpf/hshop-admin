@@ -1,13 +1,16 @@
-import { login, logout, getInfo } from '@/api/user'
+import { apiLogin, apiUserInfo, apiLogout } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
-    name: '',
-    avatar: '',
-    roles: []
+    user_id: 0,
+    user_name: '',
+    avatar_url: '',
+    mobile: '',
+    user_type: '',
+    menu_alias: []
   }
 }
 
@@ -20,23 +23,32 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_USER_ID: (state, user_id) => {
+    state.user_id = user_id
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_USER_NAME: (state, user_name) => {
+    state.user_name = user_name
   },
-  SET_ROLES: (state, roles) => {
-    state.roles = roles
+  SET_AVATAR_URL: (state, avatar_url) => {
+    state.avatar_url = avatar_url
+  },
+  SET_MOBILE: (state, mobile) => {
+    state.mobile = mobile
+  },
+  SET_USER_TYPE: (state, user_type) => {
+    state.user_type = user_type
+  },
+  SET_MENU_ALIAS: (state, menu_alias) => {
+    state.menu_alias = menu_alias
   }
 }
 
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { auth_type, username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      apiLogin({ auth_type: auth_type, username: username.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
@@ -50,23 +62,21 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      apiUserInfo().then(response => {
         const { data } = response
 
         if (!data) {
-          reject('Verification failed, please Login again.')
+          return reject('验证失败，请重新登录')
         }
 
-        const { roles, name, avatar } = data
+        const { user_id, user_name, avatar_url, mobile, user_type, menu_alias } = data
 
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
-
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        commit('SET_USER_ID', user_id)
+        commit('SET_USER_NAME', user_name)
+        commit('SET_AVATAR_URL', avatar_url)
+        commit('SET_MOBILE', mobile)
+        commit('SET_USER_TYPE', user_type)
+        commit('SET_MENU_ALIAS', menu_alias)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -77,7 +87,7 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      apiLogout().then(() => {
         removeToken() // must remove  token  first
         resetRouter()
         commit('RESET_STATE')

@@ -1,20 +1,18 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
-    <div class="dashboard-text">roles: <span v-for="role in roles" :key="role">{{ role }}</span></div>
+    <div class="dashboard-text">name: {{ user.user_name }}</div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import store from '@/store'
 
 export default {
   name: 'Dashboard',
   computed: {
-    ...mapGetters([
-      'name',
-      'roles'
-    ])
+    user: () => {
+      return store.getters.user
+    }
   }
 }
 </script>
