@@ -9,7 +9,7 @@
     <!-- Note that row-key is necessary to get a correct row order. -->
     <el-table
       ref="dragTable"
-      :loading="listLoading"
+      v-loading="listLoading"
       :data="dataList"
       :default-expand-all="true"
       row-key="id"
@@ -134,8 +134,6 @@
       @close="close"
       @crop-upload-success="cropSuccess"
     />
-    <!--    上传图片组件-->
-    <UploadComp ref="UploadComp" :is-single="checkedUploadData.isSingle" @confirmUpload="confirmUpload" />
   </div>
 </template>
 
@@ -146,11 +144,10 @@ import { apiRoleList } from '@/api/system/role'
 import ImageCropper from '@/components/ImageCropper'
 import Pagination from '@/components/Pagination'
 import { apiCreateUploadsImage } from '@/api/system/uploads'
-import UploadComp from '@/components/UploadComp/index'
 
 export default {
   name: 'AuthUser',
-  components: { ImageCropper, Pagination, UploadComp },
+  components: { ImageCropper, Pagination },
   data() {
     return {
       checkedUploadData: {
@@ -214,24 +211,6 @@ export default {
     this.getEnumData()
   },
   methods: {
-    handleUpload(str, bool) {
-      this.$refs.UploadComp.showDialog()
-      this.checkedUploadData = {
-        str: str,
-        isSingle: bool
-      }
-    },
-    confirmUpload(data) {
-      if (data.length > 0) {
-        if (this.checkedUploadData.isSingle) {
-          this.temp[this.checkedUploadData.str] = data[0].full_url
-        } else {
-          this.temp[this.checkedUploadData.str] = this.temp[this.checkedUploadData.str].concat(data)
-        }
-        console.log(2222222, this.temp)
-        this.$forceUpdate()
-      }
-    },
     cropSuccess(resData) {
       this.imagecropperShow = false
       this.imagecropperKey = this.imagecropperKey + 1
@@ -267,7 +246,6 @@ export default {
     async getRoleList() {
       const { data } = await apiRoleList({ page: 1, page_size: 1000 })
       this.rolesData = data.list
-      console.log(data)
     },
     async getMenuList() {
       const { data } = await apiMenuList({ menu_version: this.defaultRoleType })

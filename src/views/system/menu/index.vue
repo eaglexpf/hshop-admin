@@ -7,7 +7,7 @@
     </div>
 
     <!-- Note that row-key is necessary to get a correct row order. -->
-    <el-table ref="dragTable" :loading="listLoading" :data="menuTree" :default-expand-all="true" row-key="menu_id" border fit highlight-current-row style="width: 100%">
+    <el-table ref="dragTable" v-loading="listLoading" :data="menuTree" :default-expand-all="true" row-key="menu_id" border fit highlight-current-row style="width: 100%">
       <!-- <el-table-column align="center" label="ID" width="65">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
