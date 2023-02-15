@@ -116,7 +116,7 @@
 
 <script>
 import { apiEnumMenuType, apiMenuList, apiMenuCreate, apiMenuUpdate, apiMenuDelete } from '@/api/system/menu'
-import waves from '@/directive/waves' // waves directive
+import waves from '@/directive/waves'
 
 export default {
   name: 'AuthMenu',
@@ -247,14 +247,25 @@ export default {
       })
     },
     handleDelete(row) {
-      apiMenuDelete({ menu_id: row.menu_id }).then(() => {
-        this.$notify({
-          title: 'Success',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+      this.$confirm('确定删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        apiMenuDelete({ menu_id: row.menu_id }).then(() => {
+          this.$notify({
+            title: 'Success',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
         })
-        this.getList()
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
       })
     },
     submitCreateData() {

@@ -34,21 +34,15 @@
       </el-table-column> -->
       <el-table-column type="expand">
         <template slot-scope="props">
-          <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="复制参数">
-              <el-button
-                v-clipboard:copy="props.row.params"
-                v-clipboard:success="onCopy"
-                type="success"
-                size="mini"
-              >
-                点我复制
-              </el-button>
-            </el-form-item>
-            <el-form-item label="参数详情">
-              <span>{{ props.row.params }}</span>
-            </el-form-item>
-          </el-form>
+          <el-button
+            v-clipboard:copy="props.row.params"
+            v-clipboard:success="onCopy"
+            type="success"
+            size="mini"
+          >
+            点我复制
+          </el-button>
+          <span><pre>{{ props.row.params }}</pre></span>
         </template>
       </el-table-column>
 
@@ -157,6 +151,9 @@ export default {
       this.listLoading = true
       const { data } = await apiBackendLogList(this.listQuery)
       this.dataList = data.list
+      this.dataList.forEach((value, index) => {
+        this.dataList[index].params = JSON.stringify(value.params, null, 4)
+      })
       this.total = data.total
       this.listLoading = false
     },
