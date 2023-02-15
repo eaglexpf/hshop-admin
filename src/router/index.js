@@ -62,8 +62,10 @@ export const notFoundRoutes = [
 ]
 
 import systemRouter from './modules/system'
+import thirdPartyRouter from '@/router/modules/third-party'
 
 export const asyncRoutes = [
+  thirdPartyRouter,
   systemRouter
 ]
 
