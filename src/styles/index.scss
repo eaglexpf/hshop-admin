@@ -64,3 +64,96 @@ div:focus {
 .app-container {
   padding: 20px;
 }
+
+.section {
+  margin-bottom: 20px;
+}
+.section-white {
+  background: #fff;
+}
+.section-header {
+  padding: 10px 15px;
+  .section-title {
+    font-size: 18px;
+  }
+}
+.section-header.with-border {
+  border-bottom: 1px solid #efefef;
+}
+.section-header.with-bg {
+  background: #f8f8f8;
+}
+.section-body {
+  padding: 20px;
+}
+.section-footer {
+  padding: 10px;
+}
+.section-footer.with-border {
+  border-top: 1px solid #efefef;
+}
+.content-center{
+  text-align: center;
+}
+.btn-save {
+  width: 200px;
+  border-radius: 60px;
+}
+.frm-tips {
+  color: #8d8d8d;
+  line-height: 1.5;
+  font-size: 12px;
+  padding: 10px 0;
+}
+.banner-uploader {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 200px;
+  height: 120px;
+  line-height: 1.3;
+  color: #dadadd;
+  border: 1px dashed #ddd;
+  cursor: pointer;
+}
+.banner-uploader i {
+  font-size: 30px;
+}
+.setting-item .setting-remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  color: #ff5000;
+}
+.uploader-setting {
+  -ms-flex: 1;
+  flex: 1;
+  padding-left: 10px;
+}
+.uploader-setting:last-child {
+  padding-right: 30px;
+}
+.goods-select {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  justify-content: center;
+  color: #8c939d;
+  cursor: pointer;
+  border: 1px dashed #ddd;
+  padding: 0 10px;
+}
+.goods-select i {
+  font-size: 14px;
+  margin-right: 5px;
+  color: #999;
+}
+[class^="el-"] + .goods-select {
+  margin-top: 10px;
+}

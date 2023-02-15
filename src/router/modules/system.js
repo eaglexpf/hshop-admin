@@ -38,6 +38,12 @@ const systemRouter = {
       name: '操作日志',
       component: () => import('@/views/system/log/index'),
       meta: { title: '操作日志', icon: 'table', alias: ['app.system.backend.log'] }
+    },
+    {
+      path: 'wechat',
+      name: '微信管理',
+      component: () => import('@/views/system/wechat/index'),
+      meta: { title: '微信管理', icon: 'table', alias: ['app.system.wechat'] }
     }
   ]
 }
