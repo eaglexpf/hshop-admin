@@ -83,8 +83,8 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error) // for debug
-    // 40011: Token expired; 40012: Illegal token;
-    if (error.response.status === 401 || error.response.data.code === 401 || error.response.data.code === 40011 || error.response.data.code === 40012) {
+    // 40101: Token expired; 40102: Token error;
+    if (error.response.status === 401 || error.response.data.code === 401 || error.response.data.code === 40101 || error.response.data.code === 40102) {
       // to re-login
       MessageBox.confirm(error.response.data.msg || 'Error', '登录异常', {
         confirmButtonText: '确认',
