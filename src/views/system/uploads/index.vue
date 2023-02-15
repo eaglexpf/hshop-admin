@@ -27,9 +27,11 @@
                   class="image"
                   :src="item.full_url"
                   :preview-src-list="[item.full_url]"
-                  fit="cover"
+                  fit="contain"
                 />
-                <div class="title">{{ item.img_name }}</div>
+                <el-tooltip class="item" effect="dark" :content="item.img_name" placement="top-start">
+                  <div class="title">{{ item.img_name }}</div>
+                </el-tooltip>
                 <div class="footer_btn">
                   <div @click="downloadItem(item, index)">
                     <el-tooltip class="item" effect="dark" content="下载" placement="top">
@@ -147,8 +149,12 @@ export default {
     height: 200px;
   }
   .title{
-    padding:  10px 0;
+    border-top: 1px solid #e7e7eb;
+    padding:  5px;
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .footer_btn{
     display: flex;

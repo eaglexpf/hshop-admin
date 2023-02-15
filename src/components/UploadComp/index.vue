@@ -52,7 +52,7 @@
             align="center"
             :total="total"
             :page.sync="listQuery.page"
-            :page-sizes="[1, 2, 3, 4]"
+            :page-sizes="[10, 20, 30]"
             :limit.sync="listQuery.page_size"
             @pagination="getList"
           />
@@ -90,7 +90,7 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        page_size: 1
+        page_size: 20
       }
     }
   },
@@ -104,7 +104,7 @@ export default {
       this.checkIds = []
       this.listQuery = {
         page: 1,
-        page_size: 1
+        page_size: 20
       }
       this.getList()
     },
