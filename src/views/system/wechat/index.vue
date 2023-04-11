@@ -4,6 +4,9 @@
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
         添加账号
       </el-button>
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleExport">
+        导出
+      </el-button>
     </div>
 
     <!-- Note that row-key is necessary to get a correct row order. -->
@@ -40,7 +43,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="300" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
@@ -48,9 +51,10 @@
           <el-button type="primary" size="mini" @click="handleJsonSchema(row)">
             装修
           </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row)">
+          <el-button type="danger" size="mini" @click="handleDelete(row)">
             删除
           </el-button>
+          <UploadCsv :file-type="'demo'" :file-rel-id="1" />
         </template>
       </el-table-column>
     </el-table>
@@ -95,10 +99,12 @@
 import { apiEnumDriver, apiWechatList, apiWechatCreate, apiWechatUpdate, apiWechatDelete } from '@/api/system/wechat'
 import Pagination from '@/components/Pagination'
 import JsonSchema from '@/components/JsonSchema'
+import UploadCsv from '@/components/UploadCsv'
+import { apiExportDownload } from '@/api/system/export_file'
 
 export default {
   name: 'WechatSetting',
-  components: { Pagination, JsonSchema },
+  components: { UploadCsv, Pagination, JsonSchema },
   data() {
     return {
       dataList: [],
@@ -263,6 +269,11 @@ export default {
     },
     handleJsonSchema() {
       this.$refs.JsonSchema.showDialog()
+    },
+    handleExport() {
+      apiExportDownload({ export_type: 'demo', request_data: this.listQuery }).then((response) => {
+        console.log(response)
+      })
     }
   }
 }

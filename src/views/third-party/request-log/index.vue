@@ -45,7 +45,7 @@
           <el-button
             v-clipboard:copy="props.row.params"
             v-clipboard:success="onCopy"
-            type="success"
+            :type="props.row.status==='success' ? 'success' : 'danger'"
             size="mini"
           >
             点我复制
@@ -54,7 +54,7 @@
           <el-button
             v-clipboard:copy="props.row.result"
             v-clipboard:success="onCopy"
-            type="success"
+            :type="props.row.status==='success' ? 'success' : 'danger'"
             size="mini"
           >
             点我复制
@@ -89,7 +89,9 @@
 
       <el-table-column label="接口状态" min-width="80" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.status }}</span>
+          <el-tag :type="row.status==='success' ? 'success' : 'danger'">
+            {{ row.status }}
+          </el-tag>
         </template>
       </el-table-column>
 
