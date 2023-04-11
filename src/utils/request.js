@@ -47,56 +47,16 @@ service.interceptors.response.use(
 
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 0) {
-      Message({
-        message: res.msg || 'Error',
-        type: 'error',
-        duration: 5 * 1000,
-        onClose: () => {
-          console.log('close')
-          // if (res.code === 40011 || res.code === 40012) {
-          //   store.dispatch('user/resetToken').then(() => {
-          //     location.reload()
-          //   })
-          // }
-        }
-      })
-
-      // 40011: Token expired; 40012: Illegal token;
-      if (res.code === 401 || res.code === 40011 || res.code === 40012) {
-        // to re-login
-        MessageBox.confirm(res.msg || 'Error', '登录异常', {
-          confirmButtonText: '确认',
-          showCancelButton: false,
-          showClose: false,
-          closeOnClickModal: false,
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
-        })
-      }
-      return Promise.reject(new Error(res.msg || 'Error'))
-    } else {
-      return res
+      checkError(res)
     }
+    return res
   },
   error => {
     console.log('err' + error) // for debug
     // 40101: Token expired; 40102: Token error;
-    if (error.response.status === 401 || error.response.data.code === 401 || error.response.data.code === 40101 || error.response.data.code === 40102) {
+    if (error.response.status === 200 && error.response.data.code !== 0) {
       // to re-login
-      MessageBox.confirm(error.response.data.msg || 'Error', '登录异常', {
-        confirmButtonText: '确认',
-        showCancelButton: false,
-        showClose: false,
-        closeOnClickModal: false,
-        type: 'warning'
-      }).then(() => {
-        store.dispatch('user/resetToken').then(() => {
-          location.reload()
-        })
-      })
+      checkError(error.response.data)
     } else {
       Message({
         // message: error.message,
@@ -108,5 +68,29 @@ service.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+function checkError(response) {
+  if (response.code === 401 || response.code === 40101 || response.code === 40102) {
+    // to re-login
+    MessageBox.confirm(response.msg || 'Error', '登录异常', {
+      confirmButtonText: '确认',
+      showCancelButton: false,
+      showClose: false,
+      closeOnClickModal: false,
+      type: 'warning'
+    }).then(() => {
+      store.dispatch('user/resetToken').then(() => {
+        location.reload()
+      })
+    })
+  } else {
+    Message({
+      // message: error.message,
+      message: response.msg || 'Error',
+      type: 'error',
+      duration: 5 * 1000
+    })
+  }
+}
 
 export default service

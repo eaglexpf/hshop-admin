@@ -15,6 +15,15 @@ export function isExternal(path) {
  * @returns {Boolean}
  */
 export function validUsername(str) {
-  const valid_map = ['admin', 'editor']
-  return valid_map.indexOf(str.trim()) >= 0
+  let reg = /^1[3456789]\d{9}$/
+  // ^1  以1开头
+  // [3456789] 第2位，使用原子表里的任意一个原子都可以
+  // \d{9}$  第三位  朝后可以是任意数字  并且最后结尾必须是数字
+  console.log(reg.test(str))
+  if (reg.test(str)) {
+    return true
+  }
+  reg = /^[a-zA-z]\w{3,15}$/
+  console.log(reg.test(str))
+  return reg.test(str)
 }
