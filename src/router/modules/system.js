@@ -44,6 +44,12 @@ const systemRouter = {
       name: '微信管理',
       component: () => import('@/views/system/wechat/index'),
       meta: { title: '微信管理', icon: 'table', alias: ['app.system.wechat'] }
+    },
+    {
+      path: 'export',
+      name: '导出列表',
+      component: () => import('@/views/system/export/index'),
+      meta: { title: '导出列表', icon: 'table', alias: ['app.system.export'] }
     }
   ]
 }

@@ -64,6 +64,9 @@ div:focus {
 .app-container {
   padding: 20px;
 }
+.app-container-header {
+  padding-bottom: 15px;
+}
 
 .section {
   margin-bottom: 20px;
@@ -156,4 +159,15 @@ div:focus {
 }
 [class^="el-"] + .goods-select {
   margin-top: 10px;
+}
+
+.el-button+.el-button {
+  margin-top: 10px;
+}
+
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right;
 }
