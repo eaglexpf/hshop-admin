@@ -42,13 +42,19 @@
 
       <el-table-column align="center" label="账号">
         <template slot-scope="{row}">
-          <span>{{ row.login_name }}</span>
+          <span>{{ row.rel.account ? row.rel.account.rel_key : '' }}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="手机号">
         <template slot-scope="{row}">
-          <span>{{ row.mobile }}</span>
+          <span>{{ row.rel.mobile ? row.rel.mobile.rel_key : '' }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="邮箱">
+        <template slot-scope="{row}">
+          <span>{{ row.rel.email ? row.rel.email.rel_key : '' }}</span>
         </template>
       </el-table-column>
 
@@ -68,15 +74,6 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 100%; padding:0 20px;">
-        <el-form-item label="账号" prop="login_name">
-          <el-input v-model="temp.login_name" />
-        </el-form-item>
-        <el-form-item v-if="dialogStatus==='create'" label="密码" prop="password">
-          <el-input v-model="temp.password" />
-        </el-form-item>
-        <el-form-item label="手机号" prop="mobile">
-          <el-input v-model="temp.mobile" />
-        </el-form-item>
         <el-form-item label="昵称" prop="user_name">
           <el-input v-model="temp.user_name" />
         </el-form-item>
@@ -87,6 +84,18 @@
               <i v-else class="el-icon-plus avatar-uploader-icon" />
             </div>
           </div>
+        </el-form-item>
+        <el-form-item label="账号" prop="account">
+          <el-input v-model="temp.account" />
+        </el-form-item>
+        <el-form-item v-if="dialogStatus==='create'" label="密码" prop="password">
+          <el-input v-model="temp.password" />
+        </el-form-item>
+        <el-form-item label="手机号" prop="mobile">
+          <el-input v-model="temp.mobile" />
+        </el-form-item>
+        <el-form-item label="邮箱" prop="mobile">
+          <el-input v-model="temp.email" />
         </el-form-item>
         <el-form-item label="角色权限">
           <el-tree
@@ -177,8 +186,9 @@ export default {
       temp: {
         user_name: '',
         avatar_url: '',
+        account: '',
         mobile: '',
-        login_name: '',
+        email: '',
         password: '',
         menu_ids: [],
         role_ids: []
@@ -195,10 +205,9 @@ export default {
       refsTreeMenus: 'menuTree',
       refsTreeRoles: 'roleTree',
       rules: {
-        login_name: [{ required: true, message: '账号必填', trigger: 'blur' }],
+        account: [{ required: true, message: '账号必填', trigger: 'blur' }],
         password: [{ required: true, message: '密码必填', trigger: 'blur' }],
-        user_name: [{ required: true, message: '昵称必填', trigger: 'blur' }],
-        mobile: [{ required: true, message: '手机号必填', trigger: 'blur' }]
+        user_name: [{ required: true, message: '昵称必填', trigger: 'blur' }]
       }
     }
   },
@@ -262,8 +271,9 @@ export default {
       this.temp = {
         user_name: '',
         avatar_url: '',
+        account: '',
         mobile: '',
-        login_name: '',
+        email: '',
         password: '',
         menu_ids: [],
         role_ids: []
@@ -291,8 +301,9 @@ export default {
       this.temp = {
         user_name: row.user_name,
         avatar_url: row.avatar_url,
-        mobile: row.mobile,
-        login_name: row.login_name,
+        account: row.rel.account ? row.rel.account.rel_key : '',
+        mobile: row.rel.mobile ? row.rel.mobile.rel_key : '',
+        email: row.rel.email ? row.rel.email.rel_key : '',
         menu_ids: row.menu_ids,
         role_ids: row.menu_id
       }

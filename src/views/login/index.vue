@@ -13,7 +13,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="账号/手机号"
+          placeholder="账号/手机号/邮箱"
           name="username"
           type="text"
           tabindex="1"
@@ -60,7 +60,7 @@ export default {
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('请输入账号/手机号'))
+        callback(new Error('请输入账号/手机号/邮箱'))
       } else {
         callback()
       }
