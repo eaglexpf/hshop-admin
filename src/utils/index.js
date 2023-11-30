@@ -170,3 +170,10 @@ export const downloadImage = (url, downloadName) => {
     link.click()
   }
 }
+
+export const isEmptyObject = (obj) => {
+  for (const key in obj) {
+    return false
+  }
+  return true
+}

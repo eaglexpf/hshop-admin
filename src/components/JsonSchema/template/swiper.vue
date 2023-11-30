@@ -13,19 +13,9 @@
     <el-carousel indicator-position="none" arrow="never" :autoplay="true" @change="change">
       <el-carousel-item v-for="(item, index) in result.data" :key="index">
         <div class="box-center">
-          <el-image :src="item.imgUrl || 'https://fakeimg.pl/320x'+ config.height + '/EFEFEF/CCC/?text=image&font=lobster'" fit="contain"></el-image>
+          <el-image :src="item.imgUrl || 'https://fakeimg.pl/320x'+ config.height + '/EFEFEF/CCC/?text=image&font=lobster'" fit="contain" />
 
-          <div class="text-deploy">
-
-            <!-- 模板1 -->
-<!--            <div class="template current-page">-->
-<!--              <div class='text1 animation1'> {{data[config.current].mainTitle}}</div>-->
-<!--              <div class='text2 animation2'>{{data[config.current].subtitle}}</div>-->
-<!--              <div class='text3 animation3'>{{data[config.current].subtitleTow}}</div>-->
-<!--              <div class='text4 animation4' :style="'border-color:'+base.WordColor">{{data[config.current].button}}</div>-->
-<!--            </div>-->
-
-          </div>
+          <div class="text-deploy" />
 
         </div>
         <h3>{{ item.contents }}</h3>

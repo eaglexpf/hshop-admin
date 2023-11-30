@@ -48,13 +48,41 @@
   box-sizing: content-box;
 }
 
-/*
-    给所有表格空项加上--
-  */
+// 给所有表格空项加上--
 .el-table .el-table__body td .cell:empty::after,
 .el-table .el-table__body td .cell > span:empty::after,
 .el-table .el-table__body td .cell .approval:empty::after,
 .el-table .el-table__body td .cell div:empty::after,
 .el-table .el-table__body td .cell .line-limit-length:empty::after{
   content: '--';
+}
+
+.img-circle {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }

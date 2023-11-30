@@ -61,7 +61,7 @@ export const notFoundRoutes = [
   { path: '*', redirect: '/404', hidden: true }
 ]
 
-import systemRouter from './modules/system'
+import systemRouter from '@/router/modules/system'
 import thirdPartyRouter from '@/router/modules/third-party'
 
 export const asyncRoutes = [
