@@ -15,9 +15,9 @@ export default {
   },
   mounted() {
     if (isEmptyObject(this.$route.query)) {
-      this.uri = '/system/auth/user/schema/create'
+      this.uri = '/system/auth/user/template/create'
     } else {
-      this.uri = '/system/auth/user/schema/update'
+      this.uri = '/system/auth/user/template/update'
     }
   }
 }

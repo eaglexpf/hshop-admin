@@ -10,7 +10,7 @@ export default {
   components: { SchemaIndex },
   data() {
     return {
-      uri: '/system/auth/user/schema/list'
+      uri: '/system/auth/user/template/list'
     }
   }
 }

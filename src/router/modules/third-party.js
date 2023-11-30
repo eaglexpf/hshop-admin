@@ -7,6 +7,7 @@ const systemRouter = {
   component: Layout,
   name: '第三方系统',
   meta: { title: '第三方系统', icon: 'el-icon-s-help', alias: ['app.third-party'] },
+  alwaysShow: true,
   children: [
     {
       path: 'request-log',

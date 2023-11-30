@@ -26,7 +26,6 @@ const systemRouter = {
       name: '用户设置',
       component: () => import('@/views/system/user'),
       meta: { title: '用户设置', icon: 'table', alias: ['app.system.user'] },
-      allowShow: true,
       children: [
         {
           path: 'edit',
