@@ -73,7 +73,7 @@
             :type="item.type ? item.type : 'primary'"
             :icon="item.icon ? item.icon : ''"
             :size="item.size ? item.size : 'mini'"
-            @click="tableActions(row, item)"
+            @click="tableActions(item, row)"
           >
             {{ item.title }}
           </el-button>
@@ -179,24 +179,12 @@ export default {
       this.loading = false
     },
     handleActions(item) {
-      const routerData = {
-        path: item.url.const
-      }
-      if (item.query) {
-        const queryData = {}
-        for (const index in item.query) {
-          queryData[index] = this.tableQuery[index]
-        }
-        if (queryData) {
-          routerData.query = queryData
-        }
-      }
-      this.$router.push(routerData)
+      this.tableActions(item, this.tableQuery)
     },
-    tableActions(row, item) {
+    tableActions(item, row) {
       if (item['jump']) {
         // 跳转到新页面
-        this.jumpActions(row, item)
+        this.jumpActions(item, row)
       } else if (item['confirm']) {
         this.$confirm(item['confirm']['message'], item['confirm']['title'], {
           confirmButtonText: item['confirm']['confirmButtonText'] ? item['confirm']['confirmButtonText'] : '确定',
@@ -204,21 +192,24 @@ export default {
           type: item['confirm']['type'] ? item['confirm']['type'] : 'warning'
         }).then(() => {
           // 在当前页面请求接口
-          this.requestActions(row, item)
+          this.requestActions(item, row)
         })
       } else {
         // 在当前页面请求接口
-        this.requestActions(row, item)
+        this.requestActions(item, row)
       }
     },
-    jumpActions(row, item) {
+    jumpActions(item, row) {
       const routerData = {
         path: item.url.const
       }
       if (item.url.query) {
         const queryData = {}
         for (const index in item.url.query) {
-          queryData[index] = row[index]
+          const queryItem = item.url.query[index]
+          if (row[queryItem]) {
+            queryData[queryItem] = row[queryItem]
+          }
         }
         if (queryData) {
           routerData.query = queryData
@@ -226,7 +217,7 @@ export default {
       }
       this.$router.push(routerData)
     },
-    async requestActions(row, item) {
+    async requestActions(item, row) {
       this.loading = true
       const requestData = {
         url: item.url.const,
@@ -238,7 +229,10 @@ export default {
       if (item.url.query) {
         const queryData = {}
         for (const index in item.url.query) {
-          queryData[index] = row[index]
+          const queryItem = item.url.query[index]
+          if (row[queryItem]) {
+            queryData[queryItem] = row[queryItem]
+          }
         }
         switch (requestData.method) {
           case 'get':
@@ -250,7 +244,7 @@ export default {
         }
       }
       request(requestData).then(res => {
-        if (res['code'] === 0 && item.url['notice'].success) {
+        if (res['code'] === 0 && item.url['notice'] && item.url['notice'].success) {
           this.$notify({
             title: item.url['notice'].success.title ? item.url['notice'].success.title : 'error',
             message: item.url['notice'].success.message ? item.url['notice'].success.message : res['msg'],
@@ -262,7 +256,7 @@ export default {
               }
             }
           })
-        } else if (res['code'] !== 0 && item.url['notice'].error) {
+        } else if (res['code'] !== 0 && item.url['notice'] && item.url['notice'].error) {
           this.$notify({
             title: item.url['notice'].error.title ? item.url['notice'].error.title : 'error',
             message: item.url['notice'].error.message ? item.url['notice'].error.message : res['msg'],
@@ -274,6 +268,9 @@ export default {
               }
             }
           })
+        }
+        if (item.url['refresh']) {
+          this.getTableData()
         }
         this.loading = false
       })
