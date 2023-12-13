@@ -19,7 +19,23 @@ const systemRouter = {
       path: 'role',
       name: '角色设置',
       component: () => import('@/views/system/role/index'),
-      meta: { title: '角色设置', icon: 'table', alias: ['app.system.role'] }
+      meta: { title: '角色设置', icon: 'table', alias: ['app.system.role'] },
+      children: [
+        {
+          path: 'create',
+          name: '添加角色',
+          hidden: true,
+          component: () => import('@/views/system/role/create'),
+          meta: { title: '添加角色', icon: 'table', routerView: true, alias: ['app.system.role.create'], activeMenu: '/system/role' }
+        },
+        {
+          path: 'update',
+          name: '修改角色',
+          hidden: true,
+          component: () => import('@/views/system/role/update'),
+          meta: { title: '修改角色', icon: 'table', routerView: true, alias: ['app.system.role.update'], activeMenu: '/system/role' }
+        }
+      ]
     },
     {
       path: 'user',
@@ -32,7 +48,7 @@ const systemRouter = {
           name: '编辑用户',
           hidden: true,
           component: () => import('@/views/system/user/edit'),
-          meta: { title: '编辑用户', icon: 'table', alias: ['app.system.user.edit'], activeMenu: '/system/user' }
+          meta: { title: '编辑用户', icon: 'table', routerView: true, alias: ['app.system.user.edit'], activeMenu: '/system/user' }
         }
       ]
     },

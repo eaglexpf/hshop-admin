@@ -76,6 +76,7 @@
 import { apiCreateUploadsImage } from '@/api/system/uploads'
 import ImageCropper from '@/components/ImageCropper'
 import request from '@/utils/request'
+import { isEmptyObject } from '@/utils'
 
 export default {
   name: 'SchemaFormIndex',
@@ -196,15 +197,23 @@ export default {
         }
         switch (requestData.method) {
           case 'get':
-            requestData.params = {
-              filter: this.$route.query,
-              params: this.ruleForm
+            if (isEmptyObject(this.$route.query)) {
+              requestData.params = this.ruleForm
+            } else {
+              requestData.params = {
+                filter: this.$route.query,
+                params: this.ruleForm
+              }
             }
             break
           case 'post':
-            requestData.data = {
-              filter: this.$route.query,
-              params: this.ruleForm
+            if (isEmptyObject(this.$route.query)) {
+              requestData.data = this.ruleForm
+            } else {
+              requestData.data = {
+                filter: this.$route.query,
+                params: this.ruleForm
+              }
             }
             break
         }
@@ -216,6 +225,7 @@ export default {
               type: item.url['notice'].success.type ? item.url['notice'].success.type : 'success',
               duration: item.url['notice'].success.duration ? item.url['notice'].success.duration : 2000,
               onClose: () => {
+                this.loading = false
                 if (item.url['notice'].success.rollback !== false) {
                   this.$router.go(-1)
                 }
@@ -228,13 +238,15 @@ export default {
               type: item.url['notice'].error.type ? item.url['notice'].error.type : 'error',
               duration: item.url['notice'].error.duration ? item.url['notice'].error.duration : 2000,
               onClose: () => {
+                this.loading = false
                 if (item.url['notice'].error.rollback !== false) {
                   this.$router.go(-1)
                 }
               }
             })
+          } else {
+            this.loading = false
           }
-          this.loading = false
         })
       })
     },
