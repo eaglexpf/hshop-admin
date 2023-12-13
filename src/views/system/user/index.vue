@@ -1,6 +1,6 @@
 <template>
-  <SchemaIndex v-if="$route.matched.length === 2" :uri="uri" />
-  <router-view v-else />
+  <router-view v-if="$route.meta['routerView']" />
+  <SchemaIndex v-else :uri="uri" />
 </template>
 
 <script>
@@ -12,6 +12,9 @@ export default {
     return {
       uri: '/system/auth/user/template/list'
     }
+  },
+  mounted() {
+    console.log(this.$route)
   }
 }
 </script>
