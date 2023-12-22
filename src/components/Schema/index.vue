@@ -60,7 +60,8 @@ export default {
     apiGetSchema() {
       return request({
         url: this.uri,
-        method: 'get'
+        method: 'get',
+        params: this.$route.query
       })
     },
     setSchema(data) {

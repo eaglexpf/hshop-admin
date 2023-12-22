@@ -30,20 +30,19 @@
 
     <el-table
       ref="dragTable"
-      :loading="loading"
+      v-loading="loading"
       :data="tableData"
       :default-expand-all="true"
-      :row-key="tableColumnsSchema.key ? tableColumnsSchema.key : 'id'"
+      :row-key="row => { return row[tableRowKey].toString()}"
       border
       fit
       highlight-current-row
-      style="width: 100%"
     >
 
       <el-table-column
         v-for="(item, index) in tableColumnsSchema"
         :key="index"
-        :align="item.align ? item.align : 'center'"
+        :align="item.align ? item.align : ''"
         :class-name="item.class ? item.class : ''"
         :width="item.width ? item.width : ''"
         :label="item.title"
@@ -59,6 +58,9 @@
               加载中<span class="dot">...</span>
             </div>
           </el-image>
+          <template v-else-if="item.type === 'tag'">
+            <el-tag v-if="item.tag && item.tag[row[index]]" :type="item.tag[row[index]].type">{{ item.tag[row[index]].message }}</el-tag>
+          </template>
           <span v-else>{{ row[index] }}</span>
         </template>
       </el-table-column>
@@ -114,6 +116,7 @@ export default {
       // base
       loading: false,
       tableURI: '',
+      tableRowKey: 'id',
       tableMethod: 'get',
       tableQuery: {
         page: 1,
@@ -148,6 +151,9 @@ export default {
     if (this.tableSchema.page_size) {
       this.tableQuery.page_size = this.tableSchema.page_size
     }
+    if (this.tableSchema.key) {
+      this.tableRowKey = this.tableSchema.key
+    }
     if (this.tableSchema.columns) {
       this.tableColumnsSchema = this.tableSchema.columns
     }
@@ -173,10 +179,13 @@ export default {
           requestData.data = this.tableQuery
           break
       }
-      const { data } = await request(requestData)
-      this.tableData = data.list
-      this.tableTotal = data.total
-      this.loading = false
+      request(requestData).then(res => {
+        if (res['code'] === 0) {
+          this.tableData = res.data.list
+          this.tableTotal = res.data.total
+        }
+        this.loading = false
+      })
     },
     handleActions(item) {
       this.tableActions(item, this.tableQuery)
@@ -207,8 +216,8 @@ export default {
         const queryData = {}
         for (const index in item.url.query) {
           const queryItem = item.url.query[index]
-          if (row[queryItem]) {
-            queryData[queryItem] = row[queryItem]
+          if (row[index]) {
+            queryData[queryItem] = row[index]
           }
         }
         if (queryData) {
@@ -230,8 +239,8 @@ export default {
         const queryData = {}
         for (const index in item.url.query) {
           const queryItem = item.url.query[index]
-          if (row[queryItem]) {
-            queryData[queryItem] = row[queryItem]
+          if (row[index]) {
+            queryData[queryItem] = row[index]
           }
         }
         switch (requestData.method) {
@@ -251,6 +260,7 @@ export default {
             type: item.url['notice'].success.type ? item.url['notice'].success.type : 'success',
             duration: item.url['notice'].success.duration ? item.url['notice'].success.duration : 2000,
             onClose: () => {
+              this.loading = false
               if (item.url['notice'].success.refresh !== false) {
                 this.getTableData()
               }
@@ -263,16 +273,21 @@ export default {
             type: item.url['notice'].error.type ? item.url['notice'].error.type : 'error',
             duration: item.url['notice'].error.duration ? item.url['notice'].error.duration : 2000,
             onClose: () => {
+              this.loading = false
               if (item.url['notice'].error.refresh !== false) {
                 this.getTableData()
               }
             }
           })
-        }
-        if (item.url['refresh']) {
+        } else if (res['code'] === 0 && item.url['refresh']) {
           this.getTableData()
+        } else if (res['code'] === 0 && item['is_search']) {
+          this.tableData = res.data.list
+          this.tableTotal = res.data.total
+          this.loading = false
+        } else {
+          this.loading = false
         }
-        this.loading = false
       })
     }
   }

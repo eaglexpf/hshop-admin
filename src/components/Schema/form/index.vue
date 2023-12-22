@@ -4,16 +4,17 @@
       ref="ruleForm"
       :model="ruleForm"
       :rules="rules"
-      :label-position="formSchemaData.labelPosition ? formSchemaData.labelPosition : 'right'"
-      :label-width="formSchemaData.labelWidth ? formSchemaData.labelWidth : '70px'"
-      :style="formSchemaData.style ? formSchemaData.style : 'width: 80%;margin: auto'"
+      :label-position="formSchemaData.labelPosition !== undefined ? formSchemaData.labelPosition : 'right'"
+      :label-width="formSchemaData.labelWidth !== undefined ? formSchemaData.labelWidth : '70px'"
+      :style="formSchemaData.style !== undefined ? formSchemaData.style : 'width: 80%;margin: auto'"
     >
       <el-form-item
         v-for="(item, index) in formSchemaData.columns"
+        v-show="item.show !== undefined ? item.show : true"
         :key="index"
         :label="item.title"
         :prop="index"
-        :style="item.style ? item.style : 'width:70%;margin: auto auto 22px auto;'"
+        :style="item.style !== undefined ? item.style : 'width:70%;margin: auto auto 22px auto;'"
       >
         <div v-if="item.type === 'avatar'" class="avatar-uploader" @click="showImagecropper(index)">
           <div class="el-upload el-upload--text">
@@ -24,19 +25,40 @@
         <el-tree
           v-else-if="item.type === 'tree'"
           :ref="getTreeRef(index, item)"
-          :check-strictly="item.checkStrictly ? item.checkStrictly : false"
-          :data="item.data ? item.data : []"
-          :props="item.props ? item.props : { children: 'children', label: 'label' }"
+          :check-strictly="item.checkStrictly !== undefined ? item.checkStrictly : false"
+          :data="item.data !== undefined ? item.data : []"
+          :props="item.props !== undefined ? item.props : { children: 'children', label: 'label' }"
           show-checkbox
-          :node-key="item.dataKey ? item.dataKey : index"
+          :node-key="item.dataKey !== undefined ? item.dataKey : index"
           class="permission-tree"
-          @check-change="(data, checked, indeterminate) => treeCheckChange(data, checked, indeterminate, index, item['dataKey'], item.ref ? item.ref : (index + 'TreeRef'))"
+          @check-change="(data, checked, indeterminate) => treeCheckChange(data, checked, indeterminate, index, item['dataKey'], item.ref !== undefined ? item.ref : (index + 'TreeRef'))"
+        />
+        <el-switch
+          v-else-if="item.type === 'switch'"
+          v-model="ruleForm[index]"
+          :active-color="item.activeColor !== undefined ? item.activeColor : '#13ce66'"
+          :inactive-color="item.inactiveColor !== undefined ? item.inactiveColor : '#ff4949'"
+          :active-text="item.activeText !== undefined ? item.activeText : ''"
+          :inactive-text="item.inactiveText !== undefined ? item.inactiveText : ''"
+        />
+        <template v-else-if="item.type === 'span'">
+          {{ item.value }}
+          <el-input
+            v-show="false"
+            v-model="ruleForm[index]"
+          />
+        </template>
+        <schema-dialog-table
+          v-else-if="item.type === 'dialog'"
+          :dialog-schema="item"
+          :dialog-rel-data="ruleForm[index]"
+          @check-change="(val) => dialogTableChange(index, val)"
         />
         <el-input
           v-else
           v-model="ruleForm[index]"
           :type="item.type"
-          :show-password="item.showPassword ? item.showPassword : false"
+          :show-password="item.showPassword !== undefined ? item.showPassword : false"
           :placeholder="item.placeholder"
           :clearable="item.clearable"
           :disabled="item.disabled"
@@ -52,7 +74,7 @@
       <el-button
         v-for="(item, index) in actionsSchemaData"
         :key="index"
-        :type="item.type ? item.type : ''"
+        :type="item.type !== undefined ? item.type : ''"
         @click="btnClick(item)"
       >
         {{ item.title }}
@@ -76,11 +98,11 @@
 import { apiCreateUploadsImage } from '@/api/system/uploads'
 import ImageCropper from '@/components/ImageCropper'
 import request from '@/utils/request'
-import { isEmptyObject } from '@/utils'
+import SchemaDialogTable from '@/components/Schema/dialog/table'
 
 export default {
   name: 'SchemaFormIndex',
-  components: { ImageCropper },
+  components: { SchemaDialogTable, ImageCropper },
   props: {
     schema: {
       type: Object,
@@ -100,7 +122,10 @@ export default {
       treeRef: [],
       imagecropperShow: false,
       imagecropperIndex: '',
-      imagecropperKey: 0
+      imagecropperKey: 0,
+      // dialog
+      dialogSchema: {},
+      dialogVisible: false
     }
   },
   computed: {
@@ -169,6 +194,9 @@ export default {
       }
       this.ruleForm[index] = node_ids
     },
+    dialogTableChange(index, val) {
+      this.ruleForm[index] = val
+    },
     btnClick(item) {
       switch (item.action) {
         case 'rollback':
@@ -197,23 +225,23 @@ export default {
         }
         switch (requestData.method) {
           case 'get':
-            if (isEmptyObject(this.$route.query)) {
-              requestData.params = this.ruleForm
-            } else {
+            if (item.url['hasFilter']) {
               requestData.params = {
                 filter: this.$route.query,
                 params: this.ruleForm
               }
+            } else {
+              requestData.params = this.ruleForm
             }
             break
           case 'post':
-            if (isEmptyObject(this.$route.query)) {
-              requestData.data = this.ruleForm
-            } else {
+            if (item.url['hasFilter']) {
               requestData.data = {
                 filter: this.$route.query,
                 params: this.ruleForm
               }
+            } else {
+              requestData.data = this.ruleForm
             }
             break
         }

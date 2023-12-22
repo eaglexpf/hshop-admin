@@ -13,7 +13,23 @@ const systemRouter = {
       path: 'menu',
       name: '菜单设置',
       component: () => import('@/views/system/menu/index'),
-      meta: { title: '菜单设置', icon: 'table', alias: ['app.system.menu'] }
+      meta: { title: '菜单设置', icon: 'table', alias: ['app.system.menu'] },
+      children: [
+        {
+          path: 'create',
+          name: '添加菜单',
+          hidden: true,
+          component: () => import('@/views/system/menu/create'),
+          meta: { title: '添加菜单', icon: 'table', routerView: true, alias: ['app.system.menu.create'], activeMenu: '/system/menu' }
+        },
+        {
+          path: 'update',
+          name: '修改菜单',
+          hidden: true,
+          component: () => import('@/views/system/menu/update'),
+          meta: { title: '修改菜单', icon: 'table', routerView: true, alias: ['app.system.menu.update'], activeMenu: '/system/menu' }
+        }
+      ]
     },
     {
       path: 'role',
@@ -67,7 +83,7 @@ const systemRouter = {
     {
       path: 'wechat',
       name: '微信管理',
-      component: () => import('@/views/system/wechat/index'),
+      component: () => import('@/views/system/menu/list'),
       meta: { title: '微信管理', icon: 'table', alias: ['app.system.wechat'] }
     },
     {
