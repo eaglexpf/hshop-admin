@@ -83,7 +83,7 @@ const systemRouter = {
     {
       path: 'wechat',
       name: '微信管理',
-      component: () => import('@/views/system/menu/list'),
+      component: () => import('@/views/system/wechat/index'),
       meta: { title: '微信管理', icon: 'table', alias: ['app.system.wechat'] }
     },
     {
