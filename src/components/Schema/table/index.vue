@@ -2,7 +2,21 @@
   <div class="app-container">
     <div class="filter-container">
       <template v-for="(item, index) in headerFiltersSchema">
+        <el-select
+          v-if="item.type === 'select'"
+          :key="index"
+          v-model="tableQuery[index]"
+          :placeholder="item.placeholder ? item.placeholder : ''"
+        >
+          <el-option
+            v-for="option in item.options"
+            :key="option.value"
+            :label="option.label"
+            :value="option.value"
+          />
+        </el-select>
         <el-input
+          v-else
           :key="index"
           v-model="tableQuery[index]"
           :type="item.type ? item.type : 'input'"
@@ -53,7 +67,7 @@
               加载中<span class="dot">...</span>
             </div>
           </el-image>
-          <el-image v-else-if="item.type === 'image'" :src="row[index]">
+          <el-image v-else-if="item.type === 'image'" class="table-image" :src="row[index]">
             <div slot="placeholder" class="image-slot">
               加载中<span class="dot">...</span>
             </div>
@@ -65,10 +79,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column v-if="tableActionsSchema" label="操作" align="center" width="260" class-name="small-padding fixed-width">
+      <el-table-column v-if="tableActionsSchema" label="操作" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button
             v-for="(item, index) in tableActionsSchema"
+            v-show="tableActionShow(item, row)"
             :key="index"
             :class="item.class ? item.class : 'filter-item'"
             :style="item.style ? item.style : ''"
@@ -187,6 +202,14 @@ export default {
         this.loading = false
       })
     },
+    tableActionShow(item, row) {
+      if (item['vShow']) {
+        // eslint-disable-next-line no-eval
+        item['vShow'] = eval(item['vShow'])
+        return item['vShow'](row)
+      }
+      return true
+    },
     handleActions(item) {
       this.tableActions(item, this.tableQuery)
     },
@@ -295,5 +318,7 @@ export default {
 </script>
 
 <style scoped>
-
+.table-image {
+  width: 70px;
+}
 </style>

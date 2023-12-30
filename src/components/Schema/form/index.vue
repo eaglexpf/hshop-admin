@@ -22,6 +22,19 @@
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </div>
         </div>
+        <template v-else-if="item.type === 'image'">
+          <schema-dialog-upload-img
+            v-if="item.num && item.num > 1"
+            :num="item.num"
+            :dialog-rel-data="ruleForm[index]"
+            @check-change="(val) => dialogUploadImgChange(index, val)"
+          />
+          <schema-dialog-upload-img
+            v-else
+            :dialog-rel-img="ruleForm[index]"
+            @check-change="(val) => dialogUploadImgChange(index, val)"
+          />
+        </template>
         <el-tree
           v-else-if="item.type === 'tree'"
           :ref="getTreeRef(index, item)"
@@ -99,10 +112,11 @@ import { apiCreateUploadsImage } from '@/api/system/uploads'
 import ImageCropper from '@/components/ImageCropper'
 import request from '@/utils/request'
 import SchemaDialogTable from '@/components/Schema/dialog/table'
+import SchemaDialogUploadImg from '@/components/Schema/dialog/uploadImg'
 
 export default {
   name: 'SchemaFormIndex',
-  components: { SchemaDialogTable, ImageCropper },
+  components: { SchemaDialogUploadImg, SchemaDialogTable, ImageCropper },
   props: {
     schema: {
       type: Object,
@@ -195,6 +209,9 @@ export default {
       this.ruleForm[index] = node_ids
     },
     dialogTableChange(index, val) {
+      this.ruleForm[index] = val
+    },
+    dialogUploadImgChange(index, val) {
       this.ruleForm[index] = val
     },
     btnClick(item) {
