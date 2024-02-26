@@ -290,7 +290,8 @@ export default {
       })
     },
     delSelectRows(val) {
-      this.selectRows = [...this.selectRows.filter(row => row[this.tableRowKey] !== val[this.tableRowKey])]
+      // eslint-disable-next-line no-undef
+      this.selectRows = structuredClone(this.selectRows.filter(row => row[this.tableRowKey] !== val[this.tableRowKey]))
     },
     handleActions(item) {
       this.requestActions(item, this.tableQuery)
@@ -335,7 +336,8 @@ export default {
       })
     },
     dialogClick() {
-      this.multipleSelection = [...this.selectRows]
+      // eslint-disable-next-line no-undef
+      this.multipleSelection = structuredClone(this.selectRows)
       this.dialogVisible = true
       this.$nextTick(() => {
         this.toggleRowSelection()
@@ -369,7 +371,8 @@ export default {
           delData.push(row[this.tableRowKey])
         }
       })
-      this.multipleSelection = [...this.multipleSelection.filter(row => delData.indexOf(row[this.tableRowKey]) === -1)]
+      // eslint-disable-next-line no-undef
+      this.multipleSelection = structuredClone(this.multipleSelection.filter(row => delData.indexOf(row[this.tableRowKey]) === -1))
       // 添加新选中的
       const multipleTable = []
       this.multipleSelection.forEach(row => {
@@ -388,7 +391,8 @@ export default {
       this.dialogVisible = false
     },
     saveDialog() {
-      this.selectRows = [...this.multipleSelection]
+      // eslint-disable-next-line no-undef
+      this.selectRows = structuredClone(this.multipleSelection)
       const dialogData = []
       this.selectRows.forEach(row => {
         if (row[this.tableRowKey]) {

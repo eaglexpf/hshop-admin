@@ -5,6 +5,7 @@ import Layout from '@/layout'
 const systemRouter = {
   path: '/third-party',
   component: Layout,
+  redirect: '/third-party/request-log',
   name: '第三方系统',
   meta: { title: '第三方系统', icon: 'el-icon-s-help', alias: ['app.third-party'] },
   alwaysShow: true,

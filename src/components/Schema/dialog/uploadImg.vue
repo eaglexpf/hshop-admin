@@ -1,11 +1,12 @@
 <template>
-  <div>
+  <div :id="id">
     <div v-if="num > 1" class="upload-list">
       <draggable v-model="data" :options="dragIssuesOptions" class="components-view" @update="draggableUpdate">
         <div v-for="(item, index) in data" :key="index" class="upload-item" @mouseenter="mouseEnter(index)" @mouseleave="mouseLeave">
           <el-image
             class="upload-item-image"
             :src="item.full_url"
+            :style="'width:' + imgSize + 'px;height:' + imgSize + 'px'"
             fit="contain"
           />
           <div class="upload-item-mask" :class="(picsCurrent === index) ? 'on' : ''">
@@ -18,7 +19,7 @@
         class="upload-item"
         @click="handleImgChange"
       >
-        <i class="el-icon-plus upload-item-icon" />
+        <i class="el-icon-plus upload-item-icon" :style="'width:' + imgSize + 'px;height:' + imgSize + 'px;line-height:' + imgSize + 'px'" />
       </div>
     </div>
     <div v-else class="upload-list">
@@ -27,12 +28,13 @@
         class="upload-item"
         @click="handleImgChange"
       >
-        <i class="el-icon-plus upload-item-icon" />
+        <i class="el-icon-plus upload-item-icon" :style="'width:' + imgSize + 'px;height:' + imgSize + 'px;line-height:' + imgSize + 'px'" />
       </div>
       <div v-for="(item, index) in data" v-else :key="index" class="upload-item" @mouseenter="mouseEnter(index)" @mouseleave="mouseLeave">
         <el-image
           class="upload-item-image"
           :src="item.full_url"
+          :style="'width:' + imgSize + 'px;height:' + imgSize + 'px'"
           fit="contain"
           @click="handleImgChange"
         />
@@ -135,10 +137,17 @@ export default {
       default() {
         return []
       }
+    },
+    imgSize: {
+      type: Number,
+      default() {
+        return 178
+      }
     }
   },
   data() {
     return {
+      id: '',
       data: [],
       picsCurrent: -1,
       dragIssuesOptions: {
@@ -163,19 +172,28 @@ export default {
     dialogRelImg: {
       immediate: true,
       handler(val) {
+        if (this.num > 1) {
+          return
+        }
         if (val) {
           this.data = [{ full_url: val }]
+        } else {
+          this.data = []
         }
       }
     },
     dialogRelData: {
       immediate: true,
       handler(val) {
+        if (this.num <= 1) {
+          return
+        }
         const data = []
         val.forEach(row => {
           data.push({ full_url: row })
         })
-        this.data = [...data]
+        // eslint-disable-next-line no-undef
+        this.data = structuredClone(data)
       }
     }
   },
@@ -217,8 +235,10 @@ export default {
     handleChecked(item, index) {
       if (item.isChecked) {
         item.isChecked = false
-        this.checkData = [...this.checkData.filter(row => row.img_id !== item.img_id)]
-        this.checkIds = [...this.checkIds.filter(row => row !== item.img_id)]
+        // eslint-disable-next-line no-undef
+        this.checkData = structuredClone(this.checkData.filter(row => row.img_id !== item.img_id))
+        // eslint-disable-next-line no-undef
+        this.checkIds = structuredClone(this.checkIds.filter(row => row !== item.img_id))
       } else if (this.num === 1) {
         item.isChecked = true
         this.list.forEach(row => {
@@ -248,7 +268,8 @@ export default {
         })
         this.$emit('check-change', data)
       } else {
-        this.data = [...this.checkData]
+        // eslint-disable-next-line no-undef
+        this.data = structuredClone(this.checkData)
         let data = ''
         this.data.forEach(row => {
           data = row.full_url
@@ -296,6 +317,7 @@ export default {
   position: relative;
   overflow: hidden;
   margin-right: 5px;
+  vertical-align: middle;
   .upload-item-mask {
     display: none;
     position: absolute;

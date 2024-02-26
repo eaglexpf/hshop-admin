@@ -67,6 +67,20 @@
           :dialog-rel-data="ruleForm[index]"
           @check-change="(val) => dialogTableChange(index, val)"
         />
+        <schema-dynamic-form-array
+          v-else-if="item.type === 'dynamic-form-array'"
+          :dynamic-schema="item"
+          :dynamic-rel-data="ruleForm[index]"
+          @change="(val) => dynamicFormArrayChange(index, val)"
+        />
+        <el-radio-group
+          v-else-if="item.type === 'radio'"
+          v-model="ruleForm[index]"
+        >
+          <template v-for="(radioItem, radioIndex) in item.radio">
+            <el-radio :key="radioIndex" :label="radioItem.value">{{ radioItem.label }}</el-radio>
+          </template>
+        </el-radio-group>
         <el-input
           v-else
           v-model="ruleForm[index]"
@@ -113,10 +127,11 @@ import ImageCropper from '@/components/ImageCropper'
 import request from '@/utils/request'
 import SchemaDialogTable from '@/components/Schema/dialog/table'
 import SchemaDialogUploadImg from '@/components/Schema/dialog/uploadImg'
+import SchemaDynamicFormArray from '@/components/Schema/dynamic/formArray'
 
 export default {
   name: 'SchemaFormIndex',
-  components: { SchemaDialogUploadImg, SchemaDialogTable, ImageCropper },
+  components: { SchemaDynamicFormArray, SchemaDialogUploadImg, SchemaDialogTable, ImageCropper },
   props: {
     schema: {
       type: Object,
@@ -212,6 +227,9 @@ export default {
       this.ruleForm[index] = val
     },
     dialogUploadImgChange(index, val) {
+      this.ruleForm[index] = val
+    },
+    dynamicFormArrayChange(index, val) {
       this.ruleForm[index] = val
     },
     btnClick(item) {

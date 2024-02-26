@@ -1,45 +1,63 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <template v-for="(item, index) in headerFiltersSchema">
-        <el-select
-          v-if="item.type === 'select'"
-          :key="index"
-          v-model="tableQuery[index]"
-          :placeholder="item.placeholder ? item.placeholder : ''"
-        >
-          <el-option
-            v-for="option in item.options"
-            :key="option.value"
-            :label="option.label"
-            :value="option.value"
-          />
-        </el-select>
-        <el-input
-          v-else
-          :key="index"
-          v-model="tableQuery[index]"
-          :type="item.type ? item.type : 'input'"
-          :placeholder="item.placeholder ? item.placeholder : ''"
-          :style="item.style ? item.style : 'width: 200px;'"
-          :class="item.class ? item.class : 'filter-item'"
-          :clearable="item.clearable ? item.clearable : false"
-          @keyup.enter.native="getTableData"
-        />
-      </template>
+    <el-button
+      v-for="(item, index) in headerActionsSchema"
+      :key="index"
+      :class="item.class ? item.class : 'filter-item'"
+      :style="item.style ? item.style : ''"
+      :type="item.type ? item.type : 'primary'"
+      :icon="item.icon ? item.icon : ''"
+      :size="item.size ? item.size : 'small'"
+      @click="handleActions(item)"
+    >
+      {{ item.title }}
+    </el-button>
+    <div v-if="hasFilter" :class="filterBoxClass">
+      <div ref="schema_filter_items" class="schema-filter-items">
+        <div ref="schema_filter_form_box">
+          <el-form ref="filterForm" :inline="true">
 
-      <el-button
-        v-for="(item, index) in headerActionsSchema"
-        :key="index"
-        :class="item.class ? item.class : 'filter-item'"
-        :style="item.style ? item.style : ''"
-        :type="item.type ? item.type : 'primary'"
-        :icon="item.icon ? item.icon : ''"
-        :size="item.size ? item.size : ''"
-        @click="handleActions(item)"
-      >
-        {{ item.title }}
-      </el-button>
+            <el-form-item v-for="(item, index) in headerFiltersSchema" :key="index" :label="item.title ? item.title : ''" class="schema-filter-items-form-item">
+              <el-select
+                v-if="item.type === 'select'"
+                :key="index"
+                v-model="tableQuery[index]"
+                :placeholder="item.placeholder ? item.placeholder : ''"
+                :style="item.style ? item.style : ''"
+                :class="item.class ? item.class : ''"
+                :clearable="item.clearable ? item.clearable : false"
+              >
+                <el-option
+                  v-for="option in item.options"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                />
+              </el-select>
+              <el-input
+                v-else
+                :key="index"
+                v-model="tableQuery[index]"
+                :type="item.type ? item.type : 'input'"
+                :placeholder="item.placeholder ? item.placeholder : ''"
+                :style="item.style ? item.style : ''"
+                :class="item.class ? item.class : ''"
+                :clearable="item.clearable ? item.clearable : false"
+              />
+            </el-form-item>
+          </el-form>
+        </div>
+
+      </div>
+      <div class="schema-filter-actions">
+        <div class="schema-filter-actions-btn">
+          <el-button type="primary" size="small" icon="el-icon-search" @click="handleFilter">查询</el-button>
+          <el-button type="primary" size="small" icon="el-icon-refresh-left" @click="resetFilterForm">重置</el-button>
+        </div>
+        <div v-if="showExtend" class="schema-filter-actions-extend">
+          <el-button type="text" :class="extend ? 'el-icon-arrow-down' : 'el-icon-arrow-up'" @click="handleExtend">{{ extend ? '展开' : '收起' }}</el-button>
+        </div>
+      </div>
     </div>
 
     <el-table
@@ -60,6 +78,7 @@
         :class-name="item.class ? item.class : ''"
         :width="item.width ? item.width : ''"
         :label="item.title"
+        :fixed="item.fixed ? item.fixed: false"
       >
         <template slot-scope="{row}">
           <el-image v-if="item.type === 'avatar'" class="img-circle" :src="row[index]">
@@ -107,6 +126,7 @@
 <script>
 import request from '@/utils/request'
 import Pagination from '@/components/Pagination'
+import { isEmptyObject } from '@/utils'
 
 export default {
   name: 'SchemaTableIndex',
@@ -121,6 +141,10 @@ export default {
   },
   data() {
     return {
+      // filter
+      hasFilter: false,
+      extend: true,
+      showExtend: false,
       // schema
       headerSchema: {},
       headerFiltersSchema: {},
@@ -141,6 +165,19 @@ export default {
       tableTotal: 0
     }
   },
+  computed: {
+    filterBoxClass() {
+      return {
+        'schema-filter': true,
+        'schema-filter-extend': this.extend
+      }
+    }
+  },
+  created() {
+    window.onresize = () => {
+      this.checkShowExtend()
+    }
+  },
   mounted() {
     if (this.schema.header) {
       this.headerSchema = this.schema.header
@@ -150,6 +187,7 @@ export default {
     }
     if (this.headerSchema.filter) {
       this.headerFiltersSchema = this.headerSchema.filter
+      this.hasFilter = !isEmptyObject(this.headerFiltersSchema)
     }
     if (this.headerSchema.actions) {
       this.headerActionsSchema = this.headerSchema.actions
@@ -178,8 +216,39 @@ export default {
     if (this.tableURI) {
       this.getTableData()
     }
+    this.$nextTick(() => {
+      this.checkShowExtend()
+    })
   },
   methods: {
+    handleExtend() {
+      this.extend = !this.extend
+    },
+    resetFilterForm() {
+      this.$refs['filterForm'].resetFields()
+      this.tableQuery.page = 1
+      this.getTableData()
+    },
+    checkShowExtend() {
+      if (!this.hasFilter) {
+        return false
+      }
+      const weight = this.$refs.schema_filter_items.clientWidth
+      let lineWeight = 0
+      let row = 1
+      this.$refs.filterForm.$children.forEach((value) => {
+        lineWeight += value.$el.clientWidth + 30
+        if (lineWeight > weight) {
+          row++
+          lineWeight = value.$el.clientWidth + 30
+        }
+      })
+      this.showExtend = row > 2
+    },
+    handleFilter() {
+      this.tableQuery.page = 1
+      this.getTableData()
+    },
     async getTableData() {
       this.loading = true
       const requestData = {
@@ -317,8 +386,41 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .table-image {
   width: 70px;
+}
+.schema-filter{
+  padding-top: 15px;
+  margin: 10px 0 15px 0;
+  overflow: hidden;
+  background-color: #f6f7f9;
+  display: flex;
+}
+.schema-filter-extend{
+  max-height: 120px;
+}
+.schema-filter-items{
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  flex-wrap: wrap;
+  display: flex;
+}
+.schema-filter-items-form-item{
+  margin: 0 0 10px 30px;
+}
+.schema-filter-actions{
+  width: 180px;
+  margin: 0 20px 20px auto;
+.el-button + .el-button {
+  margin-top: 0;
+}
+}
+.schema-filter-actions-btn{
+  text-align: right;
+}
+.schema-filter-actions-extend{
+  margin: 10px 0 0 20px;
 }
 </style>

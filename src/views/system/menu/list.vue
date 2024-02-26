@@ -271,7 +271,8 @@ export default {
     submitCreateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp)
+          // eslint-disable-next-line no-undef
+          const tempData = structuredClone(this.temp)
           apiMenuCreate(tempData).then(() => {
             this.dialogFormVisible = false
             this.$notify({
@@ -288,8 +289,10 @@ export default {
     submitUpdateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempFilter = Object.assign({}, this.temp_filter)
-          const tempData = Object.assign({}, this.temp)
+          // eslint-disable-next-line no-undef
+          const tempFilter = structuredClone(this.temp_filter)
+          // eslint-disable-next-line no-undef
+          const tempData = structuredClone(this.temp)
           this.apiUpdateMenuData(tempFilter, tempData)
         }
       })
