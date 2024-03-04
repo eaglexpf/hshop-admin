@@ -5,3 +5,39 @@
   margin-right: 5px;
   margin-bottom: 5px;
 }
+.table-image {
+  width: 70px;
+}
+.schema-filter{
+  padding-top: 15px;
+  margin: 10px 0 15px 0;
+  overflow: hidden;
+  background-color: #f6f7f9;
+  display: flex;
+}
+.schema-filter-extend{
+  max-height: 120px;
+}
+.schema-filter-items{
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  flex-wrap: wrap;
+  display: flex;
+}
+.schema-filter-items-form-item{
+  margin: 0 0 10px 30px;
+}
+.schema-filter-actions{
+  width: 180px;
+  margin: 0 20px 20px auto;
+  .el-button + .el-button {
+    margin-top: 0;
+  }
+}
+.schema-filter-actions-btn{
+  text-align: right;
+}
+.schema-filter-actions-extend{
+  margin: 10px 0 0 20px;
+}

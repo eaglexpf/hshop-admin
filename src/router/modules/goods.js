@@ -5,15 +5,45 @@ import Layout from '@/layout'
 const goodsRouter = {
   path: '/goods',
   component: Layout,
-  redirect: '/goods/category',
+  redirect: '/goods/spu',
   name: '商品',
   meta: { title: '商品', icon: 'el-icon-s-help', alias: ['app.goods'] },
   children: [
     {
+      path: 'spu',
+      name: '商品列表',
+      component: () => import('@/views/goods/spu/index'),
+      redirect: '/goods/spu/list',
+      meta: { title: '商品列表', icon: 'table', alias: ['app.goods.spu'] },
+      children: [
+        {
+          path: 'list',
+          name: '商品列表',
+          hidden: true,
+          component: () => import('@/views/goods/spu/list'),
+          meta: { icon: 'table', routerView: true, alias: ['app.goods.spu.list'], activeMenu: '/goods/spu' }
+        },
+        {
+          path: 'create',
+          name: '添加商品',
+          hidden: true,
+          component: () => import('@/views/goods/spu/create'),
+          meta: { title: '添加商品', icon: 'table', routerView: true, alias: ['app.goods.spu.create'], activeMenu: '/goods/spu' }
+        },
+        {
+          path: 'update',
+          name: '修改商品',
+          hidden: true,
+          component: () => import('@/views/goods/spu/update'),
+          meta: { title: '修改商品', icon: 'table', routerView: true, alias: ['app.goods.spu.update'], activeMenu: '/goods/spu' }
+        }
+      ]
+    },
+    {
       path: 'category',
       name: '商品分类',
       component: () => import('@/views/goods/category/index'),
-      meta: { title: '商品分类', icon: 'table', alias: ['app.system.category'] },
+      meta: { title: '商品分类', icon: 'table', alias: ['app.goods.category'] },
       children: [
         {
           path: 'create',
@@ -35,7 +65,7 @@ const goodsRouter = {
       path: 'brand',
       name: '商品品牌',
       component: () => import('@/views/goods/brand/index'),
-      meta: { title: '商品品牌', icon: 'table', alias: ['app.system.brand'] },
+      meta: { title: '商品品牌', icon: 'table', alias: ['app.goods.brand'] },
       children: [
         {
           path: 'create',
@@ -57,7 +87,7 @@ const goodsRouter = {
       path: 'spec',
       name: '商品规格',
       component: () => import('@/views/goods/spec/index'),
-      meta: { title: '商品规格', icon: 'table', alias: ['app.system.spec'] },
+      meta: { title: '商品规格', icon: 'table', alias: ['app.goods.spec'] },
       children: [
         {
           path: 'create',
@@ -72,6 +102,28 @@ const goodsRouter = {
           hidden: true,
           component: () => import('@/views/goods/spec/update'),
           meta: { title: '修改规格', icon: 'table', routerView: true, alias: ['app.goods.spec.update'], activeMenu: '/goods/spec' }
+        }
+      ]
+    },
+    {
+      path: 'params',
+      name: '商品参数',
+      component: () => import('@/views/goods/params/index'),
+      meta: { title: '商品参数', icon: 'table', alias: ['app.goods.params'] },
+      children: [
+        {
+          path: 'create',
+          name: '添加参数',
+          hidden: true,
+          component: () => import('@/views/goods/params/create'),
+          meta: { title: '添加参数', icon: 'table', routerView: true, alias: ['app.goods.params.create'], activeMenu: '/goods/params' }
+        },
+        {
+          path: 'update',
+          name: '修改参数',
+          hidden: true,
+          component: () => import('@/views/goods/params/update'),
+          meta: { title: '修改参数', icon: 'table', routerView: true, alias: ['app.goods.params.update'], activeMenu: '/goods/params' }
         }
       ]
     }
