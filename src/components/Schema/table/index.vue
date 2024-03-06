@@ -287,7 +287,7 @@ export default {
         // 跳转到新页面
         this.jumpActions(item, row)
       } else if (item['confirm']) {
-        this.$confirm(item['confirm']['message'], item['confirm']['title'], {
+        this.$confirm(item['confirm']['message'], item['confirm']['title'] ? item['confirm']['title'] : '警告', {
           confirmButtonText: item['confirm']['confirmButtonText'] ? item['confirm']['confirmButtonText'] : '确定',
           cancelButtonText: item['confirm']['cancelButtonText'] ? item['confirm']['cancelButtonText'] : '取消',
           type: item['confirm']['type'] ? item['confirm']['type'] : 'warning'
